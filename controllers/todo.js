@@ -80,7 +80,9 @@ exports.fetchTodoById = async (req, res, next) => {
     }
     res.status(200).json({
       message: "Todo found successfully!",
-      todo: todo,
+      data: {
+        todo: todo,
+      },
     });
   } catch (err) {
     // server error occur
@@ -91,4 +93,71 @@ exports.fetchTodoById = async (req, res, next) => {
   }
 };
 
+// update a todo item by it's id
+exports.updateToDo = async (req, res, next) => {
+  console.log("PUT /todo/:id reached");
+  console.log(`Request body: ${req.body.title}`);
+  try {
+    const id = req.params.id;
+    const toDo = await Todo.findById(id);
+    if (!toDo) {
+      return res.status(404).json({
+        message: `Todo with id: ${id} not found`,
+      });
+    }
+    const updatedToDo = await Todo.findByIdAndUpdate(id, {
+      title: req.body.title,
+      isCompleted: req.body.isCompleted === "true" ? true : false,
+    });
+    if (!updatedToDo) {
+      return res.status(404).json({
+        message: `Todo with id: ${id} not found`,
+      });
+    }
+    res.status(200).json({
+      message: "Updated the to-do successfully",
+      toDo: updatedToDo,
+    });
+  } catch (err) {
+    // server error occur
+    res.status(500).json({
+      message: "Error occurred while updating todo item",
+      errors: err,
+    });
+  }
+};
 
+// delete a todo item by it's id
+exports.deleteToDo = async (req, res, next) => {
+  console.log("DELETE /todo/:id reached");
+  console.log(`Request params id : ${req.params.id}`);
+  try {
+    const id = req.params.id;
+    const toDo = await Todo.findById(id);
+    if (!toDo) {
+      return res.status(404).json({
+        error: "Error occurred while deleting the to-do item",
+        message: `Todo with id: ${id} not found`,
+      });
+    }
+    const deletedToDo = await Todo.findByIdAndDelete(id);
+    if (!deletedToDo) {
+      return res.status(404).json({
+        error: "Error occurred while deleting the to-do item",
+        message: `Deletion failed with id ${id}`,
+      });
+    }
+    res.status(200).json({
+      message: "Deleted the to-do successfully",
+      toDo: {
+        id: deletedToDo._id,
+      },
+    });
+  } catch (err) {
+    // server error occur
+    res.status(500).json({
+      message: "Error occurred while deleting todo item",
+      errors: err,
+    });
+  }
+};
