@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
+const cors = require('cors');
 // const { body, validationResult } = require("express-validator");
 
 // Import Models
@@ -19,6 +20,7 @@ const app = express();
 
 // external Middlewares setup
 app.use(bodyParser.json());
+app.use(cors());
 
 // Middleware for Routes for 'todo'
 app.use("/todo", todoRoutes);
