@@ -1,14 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require('cors');
+const cors = require("cors");
 // const { body, validationResult } = require("express-validator");
 
 // Import Models
 const Todo = require("./models/toDo");
+const User = require("./models/user");
 
 // Import routes
 const todoRoutes = require("./routes/todo");
+const userRoutes = require("./routes/user");
 
 // Setup the MongoDB configs
 const PORT = 8080;
@@ -25,7 +27,11 @@ app.use(cors());
 // Middleware for Routes for 'todo'
 app.use("/todo", todoRoutes);
 
+// Middleware for Routes for 'user'
+app.use("/user", userRoutes);
+
 app.use("/", (req, res, next) => {
+  console.log("Root path reached!");
   res.status(200).json({
     message: "Hello from root path '/'",
   });
