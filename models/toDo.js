@@ -13,6 +13,10 @@ const toDoSchema = new Schema(
       required: true,
       default: false,
     },
+    creator: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
   },
   {
     timestamps: true,

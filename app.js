@@ -1,20 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
-const cors = require("cors");
-// const { body, validationResult } = require("express-validator");
 
-// Import Models
-const Todo = require("./models/toDo");
-const User = require("./models/user");
+require("dotenv").config();
 
 // Import routes
+const authRoutes = require("./routes/auth");
 const todoRoutes = require("./routes/todo");
-const userRoutes = require("./routes/user");
 
 // Setup the MongoDB configs
-const PORT = 8080;
-const DB_NAME = "TODO-DB";
+const PORT = process.env.PORT || 8080;
+const DB_NAME = process.env.DB_NAME || "TODO-DB";
 const MONGODB_URL = "mongodb://127.0.0.1:27017/" + DB_NAME;
 
 // Create the express app
@@ -22,14 +18,27 @@ const app = express();
 
 // external Middlewares setup
 app.use(bodyParser.json());
-app.use(cors());
 
-// Middleware for Routes for 'todo'
+// To allow CORS policy
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "OPTIONS, GET, POST, PUT, PATCH, DELETE"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization,Access-Control-Allow-Credentials"
+  );
+  next();
+});
+
+// 'Todo' Routes
 app.use("/todo", todoRoutes);
+// 'Auth' Routes
+app.use("/auth", authRoutes);
 
-// Middleware for Routes for 'user'
-app.use("/user", userRoutes);
-
+// FallBack Routes
 app.use("/", (req, res, next) => {
   console.log("Root path reached!");
   res.status(200).json({

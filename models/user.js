@@ -20,6 +20,12 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
+    todos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Todo",
+      },
+    ],
   },
   {
     timestamps: true,
